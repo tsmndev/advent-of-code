@@ -5,6 +5,10 @@
 #include "utils.h"
 
 #define MIN(x, y) ((x) < (y)) ? (x) : (y)
+#define MAX(x, y) ((x) > (y)) ? (x) : (y)
+
+uint32_t calculate_paper(uint32_t height, uint32_t width, uint32_t length);
+uint32_t calculate_ribbon(uint32_t height, uint32_t width, uint32_t length);
 
 int main(int argc, const char** argv){
 
@@ -34,7 +38,8 @@ int main(int argc, const char** argv){
     memcpy(content_copy, file_content_buffer, content_len + 1);
 
     // ALGORITHM
-    uint64_t sum = 0;
+    uint64_t paper_sum = 0;
+    uint64_t ribbon_sum = 0;
     const char* delimeter = "\n";
     char* token = strtok(content_copy, delimeter);
     while (token != NULL) {
@@ -46,26 +51,40 @@ int main(int argc, const char** argv){
             return -1;
         }
 
-        // printf("%dx%dx%d\n", length, width, height);
-        //
-
-        int side_1 = length * height;
-        int side_2 = length * width;
-        int side_3 = width * height;
-
-        int min_side = MIN(side_1, MIN(side_2, side_3));
-
-        sum += ((2 * side_1)
-            + (2 * side_2)
-            + (2 * side_3))
-            + min_side;
+        paper_sum += calculate_paper(height, width, length);
+        ribbon_sum += calculate_ribbon(height, width, length);
 
         token = strtok(NULL, delimeter);
     }
 
-    printf("The sum of the area is: %lu\n", sum);
+    printf("The sum of the area is: %lu\n", paper_sum);
+    printf("The sum of the ribbon is: %lu\n", ribbon_sum);
 
     free(file_content_buffer);
     free(content_copy);
     return 0;
+}
+
+uint32_t calculate_paper(uint32_t height, uint32_t width, uint32_t length){
+
+    uint32_t side_1 = length * height;
+    uint32_t side_2 = length * width;
+    uint32_t side_3 = width * height;
+
+    uint32_t min_side = MIN(side_1, MIN(side_2, side_3));
+
+    return ((2 * side_1)
+        + (2 * side_2)
+        + (2 * side_3))
+        + min_side;
+}
+
+// This is probably an unoptimzied solition
+// TODO: Look for how to get two of the smallest element effectively
+uint32_t calculate_ribbon(uint32_t height, uint32_t width, uint32_t length){
+    uint32_t wrap_len = 2 * (height + width + length);
+    wrap_len -= 2 * (MAX(height, MAX(width, length)));
+
+    wrap_len += height * width * length;
+    return wrap_len;
 }
