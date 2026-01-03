@@ -8,4 +8,6 @@ project("advent-of-code-2015-c"
 # For clangd
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+add_subdirectory(external)
+
 add_subdirectory(src)

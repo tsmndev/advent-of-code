@@ -1,0 +1,3 @@
+[submodule "2015/external/zdk"]
+	path = 2015/external/zdk
+	url = https://github.com/z-libs/zdk.git
